@@ -88,7 +88,7 @@ public class BookDao {
     }
 
     public boolean delete(Integer id) {
-        String recordSql = "select count(*) from records_books";
+        String recordSql = "select count(*) from records_books where book_id = " + id;
         Integer count = jdbcTemplate.query(recordSql,rs -> {rs.next();
             return rs.getInt(1);});
         if (count==null) {

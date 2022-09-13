@@ -29,8 +29,6 @@ public class BookController {
 
     @PostMapping
     public String create(BookDto bookDto, Model model) {
-        System.out.println("Some changes");
-        System.out.println("Ba'zi o'zgarishlar");
         boolean exist = bookDao.exist(bookDto.getIsbn());
         if (!exist) {
             bookDao.create(bookDto);

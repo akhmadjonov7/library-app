@@ -53,7 +53,14 @@
                                 required
                         >
                             <c:forEach items="${authorList}" var="val">
-                                <option value="${val.authorId}">${val.authorFullName}</option>
+                                <c:choose>
+                                    <c:when test="${book.authorDtoList.contains(val)}">
+                                        <option selected value="${val.authorId}">${val.authorFullName}</option>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="${val.authorId}">${val.authorFullName}</option>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:forEach>
                         </select>
                     </div>
@@ -68,7 +75,14 @@
                                 required
                         >
                             <c:forEach items="${languagesList}" var="lang">
-                                <option value="${lang.id}">${lang.name}</option>
+                                <c:choose>
+                                    <c:when test="${book.languageId==lang.id}">
+                                        <option selected value="${lang.id}">${lang.name}</option>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="${lang.id}">${lang.name}</option>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:forEach>
                         </select>
                     </div>
@@ -84,7 +98,14 @@
                                 required
                         >
                             <c:forEach items="${categoriesList}" var="category">
-                                <option value="${category.id}">${category.name}</option>
+                                <c:choose>
+                                    <c:when test="${book.categoryDtoList.contains(category)}">
+                                        <option selected value="${category.id}">${category.name}</option>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="${category.id}">${category.name}</option>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:forEach>
                         </select>
                     </div>

@@ -3,10 +3,7 @@ package uz.pdp.libraryapp.record;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import uz.pdp.libraryapp.book.Book;
 import uz.pdp.libraryapp.book.BookDao;
 import uz.pdp.libraryapp.book.BookDto;
@@ -24,13 +21,19 @@ public class RecordController {
     public final RecordDao recordDao;
     @PostMapping
     public String create(RecordDto recordDto){
-        recordDao.create(recordDto);
-        return "redirect:/records";
+        List<String> booksCannotGet = recordDao.create(recordDto);
+        if (booksCannotGet.size()==0) {
+            return "redirect:/records";
+        }
+        return "redirect:/records?books=error";
     }
     @GetMapping
-    public String read(Model model){
+    public String read(@RequestParam(value = "books", defaultValue = "") String book, Model model){
         List<RecordDto> recordList = recordDao.read();
         model.addAttribute("records",recordList);
+        if (book.equals("error")) {
+            model.addAttribute("error", "We don't hava some books which you choose!!!");
+        }
         return "/record/view-records";
     }
     @PostMapping("/edit")
