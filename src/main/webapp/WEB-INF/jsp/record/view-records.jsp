@@ -18,7 +18,7 @@
 <div class="container text-center">
 
     <h1>======= RECORDS =======</h1>
-    <h1 style="color: red">${error}</h1>
+    <h1 style="color: red">${error}</h1><br>
     <a class="btn btn-outline-primary my-4" href="/records/get-form">+ Add new record</a>
     <div class="row">
         <div class="col-md-8 offset-2">
@@ -49,10 +49,10 @@
                         <td>
                             <c:choose>
                                 <c:when test="${record.returned==false}">
-                            <a class="btn btn-outline-success" href="/records/return/${record.id}">✔️</a>
+                                    <a class="btn btn-outline-success" href="/records/return/${record.id}">✔️</a>
                                 </c:when>
                                 <c:otherwise>
-                            <a class="btn btn-outline-danger" href="/records/not-return/${record.id}">❌</a>
+                                    <a class="btn btn-outline-danger" href="/records/not-return/${record.id}">❌</a>
                                 </c:otherwise>
                             </c:choose>
                             <a class="btn btn-warning" href="/records/edit/${record.id}">EDIT</a>
