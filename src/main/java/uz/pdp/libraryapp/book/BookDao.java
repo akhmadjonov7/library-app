@@ -91,7 +91,7 @@ public class BookDao {
         String recordSql = "select count(*) from records_books where book_id = " + id;
         Integer count = jdbcTemplate.query(recordSql,rs -> {rs.next();
             return rs.getInt(1);});
-        if (count==null) {
+        if (count>=1) {
             return false;
         }
         String categorySql = "delete from books_categories where book_id = ?;";

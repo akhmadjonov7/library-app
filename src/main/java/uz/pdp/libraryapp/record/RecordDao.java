@@ -27,14 +27,14 @@ public class RecordDao {
                 rs.next();
                 return rs.getInt(1);
             });
-            if (bookCount==0) {
+            if (bookCount == 0) {
                 booksCannotGetId.add(bookId);
                 bookSql = "select title from books where id = " + bookId;
                 String title = jdbcTemplate.queryForObject(bookSql, BeanPropertyRowMapper.newInstance(String.class));
                 booksCannotGetTitle.add(title);
             }
         }
-        if (booksCannotGetId.size()==recordDto.getBooksId().size()){
+        if (booksCannotGetId.size() == recordDto.getBooksId().size()) {
             return booksCannotGetTitle;
         }
         String recordSql = "insert into records (user_id) values (" + recordDto.getUserId() + ") returning  id";
@@ -83,17 +83,26 @@ public class RecordDao {
         }
     }
 
-    public void delete(int id) {
+    public boolean delete(int id) {
+        String sql = "select is_returned from records where id = " + id;
+        Boolean returned = jdbcTemplate.query(sql, rs -> {
+            rs.next();
+            return rs.getBoolean(1);
+        });
+        if (returned == null || !returned) {
+            return false;
+        }
         String rbSql = "delete from records_books where record_id = ?";
         jdbcTemplate.update(rbSql, id);
         String recordSql = "delete from records where id = ? ";
         jdbcTemplate.update(recordSql, id);
+        return true;
     }
 
     public void returned(int id) {
         String sql = "update records set is_returned = true, date_time = now() where id = ?";
         jdbcTemplate.update(sql, id);
-        sql = "update books set total_count = total_count + 1 where id = (select b.id from books b join records_books rb on b.id = rb.book_id join records r on r.id = rb.record_id where r.id = "+id+")";
+        sql = "update books set total_count = total_count + 1 where id = (select b.id from books b join records_books rb on b.id = rb.book_id join records r on r.id = rb.record_id where r.id = " + id + ")";
         jdbcTemplate.update(sql);
     }
 
@@ -103,15 +112,15 @@ public class RecordDao {
         return recordDto;
     }
 
-    public void notReturned(int id) {
-        String sql = "update records set is_returned = false, date_time = taken_time where id = ?";
-        jdbcTemplate.update(sql, id);
-        sql = "update books set total_count = total_count - 1 where id = (select b.id from books b join records_books rb on b.id = rb.book_id join records r on r.id = rb.record_id where r.id = "+id+")";
-        jdbcTemplate.update(sql);
-    }
+//    public void notReturned(int id) {
+//        String sql = "update records set is_returned = false, date_time = taken_time where id = ?";
+//        jdbcTemplate.update(sql, id);
+//        sql = "update books set total_count = total_count - 1 where id = (select b.id from books b join records_books rb on b.id = rb.book_id join records r on r.id = rb.record_id where r.id = "+id+")";
+//        jdbcTemplate.update(sql);
+//    }
 
     public RecordDto readToEdit(Integer id) {
-        String sql = "select r.user_id, json_agg(json_build_object('id', b.id, 'title', b.title)) from records r join records_books rb on r.id = rb.record_id join books b on b.id = rb.book_id  where r.id = "+id+" group by  r.id ,user_id ;";
+        String sql = "select r.user_id, json_agg(json_build_object('id', b.id, 'title', b.title)) from records r join records_books rb on r.id = rb.record_id join books b on b.id = rb.book_id  where r.id = " + id + " group by  r.id ,user_id ;";
         return jdbcTemplate.query(sql, rs -> {
             rs.next();
             Array array = rs.getArray(2);
@@ -125,13 +134,14 @@ public class RecordDao {
                     .build();
         });
     }
-    public List<Book> readBooksToEdit(){
+
+    public List<Book> readBooksToEdit() {
         String sql = "select id, title from books";
-        return jdbcTemplate.query(sql,(rs, rowNum) ->
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
                 Book.builder()
                         .id(rs.getInt(1))
                         .title(rs.getString(2))
                         .build()
-                );
+        );
     }
 }

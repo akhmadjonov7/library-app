@@ -25,14 +25,15 @@ public class RecordController {
         if (booksCannotGet.size()==0) {
             return "redirect:/records";
         }
-        return "redirect:/records?books=error";
+        return "redirect:/records?error=book";
     }
     @GetMapping
-    public String read(@RequestParam(value = "books", defaultValue = "") String book, Model model){
+    public String read(@RequestParam(value = "error", defaultValue = "") String error, Model model){
         List<RecordDto> recordList = recordDao.read();
         model.addAttribute("records",recordList);
-        if (book.equals("error")) {
-            model.addAttribute("error", "We don't hava some books which you choose!!!");
+        switch (error){
+            case "book" -> model.addAttribute("error", "We don't hava some books which you choose!!!");
+            case "false" -> model.addAttribute("error", "You cannot delete this record!!!");
         }
         return "/record/view-records";
     }
@@ -43,7 +44,10 @@ public class RecordController {
     }
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") int id){
-        recordDao.delete(id);
+        boolean delete = recordDao.delete(id);
+        if (!delete) {
+            return "redirect:/records?error=false";
+        }
         return "redirect:/records";
     }
     @GetMapping("/return/{id}")
@@ -68,10 +72,10 @@ public class RecordController {
         model.addAttribute("userDtoList",userDtoList);
         return "record/record-form";
     }
-    @GetMapping("/not-return/{id}")
-    public String notReturned(@PathVariable("id") int id){
-        recordDao.notReturned(id);
-        return "redirect:/records";
-    }
+//    @GetMapping("/not-return/{id}")
+//    public String notReturned(@PathVariable("id") int id){
+//        recordDao.notReturned(id);
+//        return "redirect:/records";
+//    }
 
 }

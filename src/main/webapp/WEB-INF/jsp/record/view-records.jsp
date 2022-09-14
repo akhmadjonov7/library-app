@@ -51,9 +51,9 @@
                                 <c:when test="${record.returned==false}">
                                     <a class="btn btn-outline-success" href="/records/return/${record.id}">✔️</a>
                                 </c:when>
-                                <c:otherwise>
-                                    <a class="btn btn-outline-danger" href="/records/not-return/${record.id}">❌</a>
-                                </c:otherwise>
+<%--                                <c:otherwise>--%>
+<%--                                    <a class="btn btn-outline-danger" href="/records/not-return/${record.id}">❌</a>--%>
+<%--                                </c:otherwise>--%>
                             </c:choose>
                             <a class="btn btn-warning" href="/records/edit/${record.id}">EDIT</a>
                             <a class="btn btn-danger" href="/records/delete/${record.id}">DELETE</a>
