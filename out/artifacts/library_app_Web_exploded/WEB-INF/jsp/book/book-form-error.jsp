@@ -54,7 +54,7 @@
                         >
                             <c:forEach items="${authorList}" var="val">
                                 <c:choose>
-                                    <c:when test="${book.authorDtoList.contains(val)}">
+                                    <c:when test="${book.authorsIds.contains(val.authorId)}">
                                         <option selected value="${val.authorId}">${val.authorFullName}</option>
                                     </c:when>
                                     <c:otherwise>
@@ -99,7 +99,7 @@
                         >
                             <c:forEach items="${categoriesList}" var="category">
                                 <c:choose>
-                                    <c:when test="${book.categoryDtoList.contains(category)}">
+                                    <c:when test="${book.categoriesIds.contains(category.id)}">
                                         <option selected value="${category.id}">${category.name}</option>
                                     </c:when>
                                     <c:otherwise>
